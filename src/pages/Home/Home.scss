@@ -1,0 +1,100 @@
+.color-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    .input-group--wrapper {
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 2rem;
+
+        .input--wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+
+            label {
+                display: flex;
+                justify-content: flex-start;
+                //text-align: start;
+                padding-left: 0.5rem;
+            }
+        }
+
+        .hexa--wrapper {
+            display: flex;
+            flex-direction: row;
+            gap: 0.5rem;
+
+            .input--wrapper {
+                display: flex;
+                flex-direction: column;
+
+                input {
+                    width: 3rem;
+                }
+
+                label {
+                    display: flex;
+                    justify-content: flex-start;
+                    //text-align: start;
+                    padding-left: 0.5rem;
+                }
+            }
+        }
+
+        .preview--wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+
+            .color-preview {
+                border: 1px solid black;
+                width: 2rem;
+                height: 2rem;
+            }
+        }
+    }
+}
+
+.controls {
+    padding: 2rem 0 1.5rem 0;
+    button {
+        padding: 0.5rem 1rem;
+        text-align: center;
+        text-decoration: none;
+        vertical-align: middle;
+        border-radius: 0.25rem;
+        font-weight: bold;
+        color: white;
+    }
+    .addColor {
+        background-color: #198754;
+    }
+    .deleteColor {
+        background-color: #fd7e14;
+    }
+    .deleteAllColor {
+        background-color: #dc3545;
+    }
+    .refreshTable {
+        background-color: #0d6efd;
+    }
+}
+.table--wrapper {
+    display: flex;
+    justify-content: center;
+
+    table {
+        tr {
+            th {
+                padding: 0.5rem 1rem;
+            }
+            td {
+                padding: 0.5rem 1rem;
+            }
+        }
+    }
+}
