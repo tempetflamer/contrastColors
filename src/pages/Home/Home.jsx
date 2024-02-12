@@ -187,13 +187,13 @@ export default function Home() {
           : hexTrim.length === 3 || hexTrim.length === 6 || hexTrim.length === 8
       ) {
         const rgbColor = hexSplit ? hexRgb(hexSplit) : hexRgb(hexTrim)
-        //chemin rgba color
+        //Path rgba color
         e.target.parentElement.previousSibling.children[0].children[1].value = rgbColor.red
         e.target.parentElement.previousSibling.children[1].children[1].value = rgbColor.green
         e.target.parentElement.previousSibling.children[2].children[1].value = rgbColor.blue
         e.target.parentElement.previousSibling.children[3].children[1].value = rgbColor.alpha
 
-        //chemin preview color
+        //Path preview color
         e.target.parentElement.parentElement.children[3].children[0].style.backgroundColor = hexSplit ? '#' + hexSplit : '#' + hexTrim
       }
     })
@@ -213,8 +213,8 @@ export default function Home() {
   }
 
   function addNewColor() {
-    setNewInput(countColor) //setNewInput(newinput + 1)
-    colorComponent(countColor + 1) //pour que ça ne soit pas affecté par le coté async du tout
+    setNewInput(countColor)
+    colorComponent(countColor + 1)
     !countColor ? setCountColor(1) : setCountColor(parseInt(countColor) + 1)
   }
 
@@ -230,47 +230,134 @@ export default function Home() {
     select.innerHTML = ''
   }
 
+  function swapTable(e) {
+    let tables = document.querySelectorAll('.table--wrapper table')
+    let tabs = document.querySelectorAll('.tabs li')
+    let legends = document.querySelectorAll('.legend div')
+    let tableActif = document.querySelector('table.actif')
+    let tabActif = document.querySelector('.tabs li.actif')
+    let legendActif = document.querySelector('.legend div.actif')
+    tableActif.removeAttribute('class', 'actif')
+    tabActif.removeAttribute('class', 'actif')
+    legendActif.removeAttribute('class', 'actif')
+    e.target.childNodes[0].data === 'Matrice'
+      ? (tables[0].setAttribute('class', 'actif'), tabs[0].setAttribute('class', 'actif'), legends[0].setAttribute('class', 'actif'))
+      : ''
+    e.target.childNodes[0].data === 'Grand textes'
+      ? (tables[1].setAttribute('class', 'actif'), tabs[1].setAttribute('class', 'actif'), legends[1].setAttribute('class', 'actif'))
+      : ''
+    e.target.childNodes[0].data === 'Petits textes'
+      ? (tables[2].setAttribute('class', 'actif'), tabs[2].setAttribute('class', 'actif'), legends[2].setAttribute('class', 'actif'))
+      : ''
+  }
+
   function refreshArrayContrast() {
     const tableWraper = document.querySelector('.table--wrapper')
     const allColors = document.querySelectorAll('.input-group--wrapper')
+
     //clear previous table before create it
     if (tableWraper.hasChildNodes()) {
-      tableWraper.removeChild(tableWraper.children[0])
+      while (tableWraper.firstChild) {
+        tableWraper.removeChild(tableWraper.firstChild)
+      }
     }
 
     let table = document.createElement('table')
+    let tableSmallText = document.createElement('table')
+    let tableLargeText = document.createElement('table')
     //header
     let tr = document.createElement('tr')
+    let trST = document.createElement('tr')
+    let trLT = document.createElement('tr')
+    //Common space between vertical and horizontal header, Empty space
+    let th = document.createElement('th')
+    let thST = document.createElement('th')
+    let thLT = document.createElement('th')
+    th.textContent = ''
+    thST.textContent = ''
+    thLT.textContent = ''
+    tr.appendChild(th)
+    trST.appendChild(thST)
+    trLT.appendChild(thLT)
+
     allColors.forEach((color, index) => {
       let th = document.createElement('th')
-      th.textContent = color.children[2].children[1].value.trim()
+      let thST = document.createElement('th')
+      let thLT = document.createElement('th')
+      let tableHeader = color.children[2].children[1].value.trim()
         ? color.children[2].children[1].value.trim()
         : color.children[2].children[1].value.includes('#')
         ? color.children[2].children[1].value
         : '#' + color.children[2].children[1].value
+      th.textContent = tableHeader
+      thST.textContent = tableHeader
+      thLT.textContent = tableHeader
       tr.appendChild(th)
+      trST.appendChild(thST)
+      trLT.appendChild(thLT)
     })
     table.appendChild(tr)
+    tableSmallText.appendChild(trST)
+    tableLargeText.appendChild(trLT)
     //rows
     allColors.forEach((color, index) => {
       let tr = document.createElement('tr')
+      let trST = document.createElement('tr')
+      let trLT = document.createElement('tr')
+      //Header Verticale
+      let th = document.createElement('th')
+      let thST = document.createElement('th')
+      let thLT = document.createElement('th')
+      let tableHeader = color.children[2].children[1].value.trim()
+        ? color.children[2].children[1].value.trim()
+        : color.children[2].children[1].value.includes('#')
+        ? color.children[2].children[1].value
+        : '#' + color.children[2].children[1].value
+      th.textContent = tableHeader
+      thST.textContent = tableHeader
+      thLT.textContent = tableHeader
+      tr.appendChild(th)
+      trST.appendChild(thST)
+      trLT.appendChild(thLT)
+
       allColors.forEach((val, i) => {
         let td = document.createElement('td')
+        let tdST = document.createElement('td')
+        let tdLT = document.createElement('td')
         let backgroundColor = color.children[2].children[1].value.includes('#')
           ? color.children[2].children[1].value
           : '#' + color.children[2].children[1].value
         td.style.backgroundColor = backgroundColor
-        //td.style.color = val.children[2].children[1].value.includes('#') ? val.children[2].children[1].value : '#' + val.children[2].children[1].value //Rather calculate by contrast, use white or black text
-        td.style.color = hex(backgroundColor, '#fff') > hex(backgroundColor, '#000') ? '#fff' : '000'
-        td.textContent = hex(
-          color.children[2].children[1].value.includes('#') ? color.children[2].children[1].value : '#' + color.children[2].children[1].value,
-          val.children[2].children[1].value.includes('#') ? val.children[2].children[1].value : '#' + val.children[2].children[1].value
-        ).toFixed(2)
+        let textColor = val.children[2].children[1].value.includes('#') ? val.children[2].children[1].value : '#' + val.children[2].children[1].value //show contrast color beetween text color and background color
+        td.style.color = textColor
+
+        if (hex(textColor, backgroundColor) >= 4.5) {
+          tdST.style.color = textColor
+          tdST.style.backgroundColor = backgroundColor
+          tdST.textContent = hex(backgroundColor, textColor).toFixed(2)
+        }
+        if (hex(textColor, backgroundColor) >= 3) {
+          tdLT.style.color = textColor
+          tdLT.style.backgroundColor = backgroundColor
+          tdLT.textContent = hex(backgroundColor, textColor).toFixed(2)
+        }
+
+        td.textContent = hex(backgroundColor, textColor).toFixed(2)
         tr.appendChild(td)
+        trST.appendChild(tdST)
+        trLT.appendChild(tdLT)
       })
       table.appendChild(tr)
+      //This change is made several times, need to be moved
+      table.setAttribute('class', 'actif')
+      document.querySelectorAll('.tabs li')[0].setAttribute('class', 'actif')
+      document.querySelectorAll('.legend div')[0].setAttribute('class', 'actif')
+      tableSmallText.appendChild(trST)
+      tableLargeText.appendChild(trLT)
     })
     tableWraper ? tableWraper.appendChild(table) : ''
+    tableWraper ? tableWraper.appendChild(tableLargeText) : ''
+    tableWraper ? tableWraper.appendChild(tableSmallText) : ''
   }
 
   return (
@@ -328,7 +415,35 @@ export default function Home() {
         </button>
       </div>
 
+      <ul className="tabs">
+        <li onClick={swapTable}>Matrice</li>
+        <li onClick={swapTable}>Grand textes</li>
+        <li onClick={swapTable}>Petits textes</li>
+      </ul>
       <div className="table--wrapper"></div>
+
+      <div className="legend--wrapper">
+        <div className="legend">
+          <div>Tous les ratios de contraste </div>
+          <div>
+            Le ratio de contraste pour les grands textes doit être supérieur ou égal à 3.
+            <br />
+            <br /> <b>Un grand texte est :</b>
+            <br />
+            - Un texte non gras supérieur ou égal à 18pt.
+            <br />- Un texte en gras supérieur ou égal à 14pt.
+          </div>
+          <div>
+            Le ratio de contraste pour les petits textes doit être supérieur ou égal à 4,5.
+            <br />
+            <br />
+            <b>Un petit texte est :</b>
+            <br />
+            - Un texte non gras inférieur à 18pt.
+            <br />- Un texte en gras inférieur à 14pt.
+          </div>
+        </div>
+      </div>
     </>
   )
 }

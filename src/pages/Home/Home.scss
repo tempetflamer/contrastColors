@@ -18,7 +18,6 @@
             label {
                 display: flex;
                 justify-content: flex-start;
-                //text-align: start;
                 padding-left: 0.5rem;
             }
         }
@@ -39,7 +38,6 @@
                 label {
                     display: flex;
                     justify-content: flex-start;
-                    //text-align: start;
                     padding-left: 0.5rem;
                 }
             }
@@ -83,11 +81,33 @@
         background-color: #0d6efd;
     }
 }
+
+.tabs {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+.tabs li {
+    width: 125px;
+    height: 30px;
+    line-height: 30px;
+    background: rgba(255, 255, 255, 0.4);
+    text-align: center;
+    margin-right: 5px;
+    color: rgba(0, 0, 0, 0.6);
+}
+.tabs li.actif {
+    background: white;
+    color: black;
+}
+
 .table--wrapper {
     display: flex;
     justify-content: center;
 
     table {
+        display: none;
         tr {
             th {
                 padding: 0.5rem 1rem;
@@ -96,5 +116,22 @@
                 padding: 0.5rem 1rem;
             }
         }
+    }
+    table.actif {
+        display: block;
+    }
+}
+
+.legend {
+    &--wrapper {
+        margin-top: 4rem;
+        display: block ruby;
+    }
+    text-align: left;
+    div {
+        display: none;
+    }
+    div.actif {
+        display: block;
     }
 }
