@@ -5,16 +5,22 @@ import hexRgb from 'hex-rgb'
 import rgbHex from 'rgb-hex'
 import { rgb, hex } from 'wcag-contrast'
 import './Home.scss'
+import { tabToCanvas } from '../../utils/utils.js'
 
 export default function Home() {
   const { addColor, colors } = useGlobalState()
   const colorListRef = useRef()
   const [countColor, setCountColor] = useState(0)
   const [newinput, setNewInput] = useState(0)
+  const [tabLoaded, setTabLoaded] = useState(0)
 
   useEffect(() => {
     !colors.size ? setCountColor(0) : setCountColor(colors.size)
   }, [colors])
+
+  function toggleTabLoaded() {
+    setTabLoaded(!tabLoaded)
+  }
 
   function colorComponent(index) {
     // return textbox
@@ -216,6 +222,9 @@ export default function Home() {
     setNewInput(countColor)
     colorComponent(countColor + 1)
     !countColor ? setCountColor(1) : setCountColor(parseInt(countColor) + 1)
+    console.log(document.querySelector('.table--wrapper'))
+    console.log(document.querySelector('.table--wrapper').children)
+    console.log(document.querySelector('.table--wrapper').children.length)
   }
 
   /**
@@ -358,6 +367,9 @@ export default function Home() {
     tableWraper ? tableWraper.appendChild(table) : ''
     tableWraper ? tableWraper.appendChild(tableLargeText) : ''
     tableWraper ? tableWraper.appendChild(tableSmallText) : ''
+    //console.log('tabloaded', tabLoaded)
+    // console.log(document.querySelector('.table--wrapper').children.length)
+    document.querySelector('.table--wrapper').children.length === 3 && tabLoaded === 0 ? toggleTabLoaded() : ''
   }
 
   return (
@@ -421,6 +433,29 @@ export default function Home() {
         <li onClick={swapTable}>Petits textes</li>
       </ul>
       <div className="table--wrapper"></div>
+
+      {tabLoaded ? (
+        <>
+          <div className="table__export--wrapper">
+            <button onClick={tabToCanvas}>Exporter tableau</button>
+          </div>
+          <div className="export__canvas--wrapper">
+            <p>
+              <i>{"Clique droit ➔ enregistrer l'image sous"}</i>
+              {" pour copier l'image"}
+            </p>
+          </div>
+        </>
+      ) : (
+        ''
+      )}
+
+      {/*       <div className="export__canvas--wrapper">
+        <p>
+          <i>{"Clique droit ➔ enregistrer l'image sous"}</i>
+          {" pour copier l'image"}
+        </p>
+      </div> */}
 
       <div className="legend--wrapper">
         <div className="legend">

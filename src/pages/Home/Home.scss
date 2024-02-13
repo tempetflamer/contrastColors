@@ -70,15 +70,35 @@
     }
     .addColor {
         background-color: #198754;
+        border: none;
+        &:hover {
+            background-color: #157347;
+            //border-color: #146c43;
+        }
     }
     .deleteColor {
         background-color: #fd7e14;
+        border: none;
+        &:hover {
+            background-color: #db6a0e;
+            //border-color: #e77314;
+        }
     }
     .deleteAllColor {
         background-color: #dc3545;
+        border: none;
+        &:hover {
+            background-color: #bb2d3b;
+            //border-color: #b02a37;
+        }
     }
     .refreshTable {
         background-color: #0d6efd;
+        border: none;
+        &:hover {
+            background-color: #0b5ed7;
+            //border-color: #0a58ca;
+        }
     }
 }
 
@@ -133,5 +153,35 @@
     }
     div.actif {
         display: block;
+    }
+}
+
+.table__export--wrapper {
+    margin-top: 2rem;
+    button {
+        padding: 0.5rem 1rem;
+        text-align: center;
+        text-decoration: none;
+        vertical-align: middle;
+        border-radius: 0.25rem;
+        font-weight: bold;
+        color: white;
+        border: none;
+        background-color: #6c757d;
+        &:hover {
+            background-color: #5a6268;
+            //border-color: #545b62;
+        }
+    }
+}
+.export__canvas--wrapper {
+    gap: 0.5rem;
+    margin-top: 2.5rem;
+    display: none;
+    &.actif {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
     }
 }
