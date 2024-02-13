@@ -5,7 +5,7 @@ import hexRgb from 'hex-rgb'
 import rgbHex from 'rgb-hex'
 import { rgb, hex } from 'wcag-contrast'
 import './Home.scss'
-import { tabToCanvas } from '../../utils/utils.js'
+import { tabToCanvas, tabToSVG, tabToPNG, tabToJPG } from '../../utils/utils.js'
 
 export default function Home() {
   const { addColor, colors } = useGlobalState()
@@ -13,6 +13,7 @@ export default function Home() {
   const [countColor, setCountColor] = useState(0)
   const [newinput, setNewInput] = useState(0)
   const [tabLoaded, setTabLoaded] = useState(0)
+  const [displayExportsTable, setDisplayExportsTable] = useState(0)
 
   useEffect(() => {
     !colors.size ? setCountColor(0) : setCountColor(colors.size)
@@ -20,6 +21,9 @@ export default function Home() {
 
   function toggleTabLoaded() {
     setTabLoaded(!tabLoaded)
+  }
+  function toggleExportsTable() {
+    setDisplayExportsTable(!displayExportsTable)
   }
 
   function colorComponent(index) {
@@ -437,7 +441,27 @@ export default function Home() {
       {tabLoaded ? (
         <>
           <div className="table__export--wrapper">
-            <button onClick={tabToCanvas}>Exporter tableau</button>
+            <button onClick={toggleExportsTable} className={displayExportsTable ? 'active' : ''} /*onClick={tabToCanvas}*/>
+              Exporter tableau
+            </button>
+            {displayExportsTable ? (
+              <div>
+                <div role="button" onClick={tabToCanvas}>
+                  Exporter vers Canva
+                </div>
+                <div role="button" onClick={tabToJPG}>
+                  Exporter vers JPG
+                </div>
+                <div role="button" onClick={tabToPNG}>
+                  Exporter vers PNG
+                </div>
+                <div role="button" onClick={tabToSVG}>
+                  Exporter vers SVG
+                </div>
+              </div>
+            ) : (
+              ''
+            )}
           </div>
           <div className="export__canvas--wrapper">
             <p>
@@ -449,13 +473,6 @@ export default function Home() {
       ) : (
         ''
       )}
-
-      {/*       <div className="export__canvas--wrapper">
-        <p>
-          <i>{"Clique droit ➔ enregistrer l'image sous"}</i>
-          {" pour copier l'image"}
-        </p>
-      </div> */}
 
       <div className="legend--wrapper">
         <div className="legend">
