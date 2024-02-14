@@ -6,6 +6,8 @@ import rgbHex from 'rgb-hex'
 import { rgb, hex } from 'wcag-contrast'
 import './Home.scss'
 import { tabToCanvas, tabToSVG, tabToPNG, tabToJPG } from '../../utils/utils.js'
+import { faFileImport, faFileExport, faFileExcel, faFileCode, faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 export default function Home() {
   const { addColor, colors } = useGlobalState()
@@ -14,6 +16,8 @@ export default function Home() {
   const [newinput, setNewInput] = useState(0)
   const [tabLoaded, setTabLoaded] = useState(0)
   const [displayExportsTable, setDisplayExportsTable] = useState(0)
+  const [displayImportColor, setDisplayImportColor] = useState(0)
+  const [displayExportColor, setDisplayExportColor] = useState(0)
 
   useEffect(() => {
     !colors.size ? setCountColor(0) : setCountColor(colors.size)
@@ -24,6 +28,12 @@ export default function Home() {
   }
   function toggleExportsTable() {
     setDisplayExportsTable(!displayExportsTable)
+  }
+  function toggleExportsColor() {
+    setDisplayExportColor(!displayExportColor)
+  }
+  function toggleImportsColor() {
+    setDisplayImportColor(!displayImportColor)
   }
 
   function colorComponent(index) {
@@ -226,9 +236,31 @@ export default function Home() {
     setNewInput(countColor)
     colorComponent(countColor + 1)
     !countColor ? setCountColor(1) : setCountColor(parseInt(countColor) + 1)
-    console.log(document.querySelector('.table--wrapper'))
-    console.log(document.querySelector('.table--wrapper').children)
-    console.log(document.querySelector('.table--wrapper').children.length)
+  }
+
+  /**
+   * Exports colors to Json
+   */
+  function toJson() {
+    const allColors = document.querySelectorAll('.input-group--wrapper')
+    let jsonArray = []
+
+    allColors.forEach((color, index) => {
+      let colorName = color.children[0].children[1].value
+      let colorR = color.children[1].children[0].children[1].value
+      let colorG = color.children[1].children[1].children[1].value
+      let colorB = color.children[1].children[2].children[1].value
+      let colorA = color.children[1].children[3].children[1].value
+      let colorHexa = color.children[2].children[1].value
+      let json = { name: colorName, rgba: { r: colorR, g: colorG, b: colorB, a: colorA }, hexa: colorHexa }
+      jsonArray.push(json)
+    })
+    let jsonConv = { colors: jsonArray }
+    const a = document.createElement('a')
+    const file = new Blob([JSON.stringify(jsonConv)], { type: 'text/plain' })
+    a.href = URL.createObjectURL(file)
+    a.download = 'contrastColorData.json'
+    a.click()
   }
 
   /**
@@ -361,58 +393,101 @@ export default function Home() {
         trLT.appendChild(tdLT)
       })
       table.appendChild(tr)
-      //This change is made several times, need to be moved
-      table.setAttribute('class', 'actif')
-      document.querySelectorAll('.tabs li')[0].setAttribute('class', 'actif')
-      document.querySelectorAll('.legend div')[0].setAttribute('class', 'actif')
       tableSmallText.appendChild(trST)
       tableLargeText.appendChild(trLT)
     })
     tableWraper ? tableWraper.appendChild(table) : ''
     tableWraper ? tableWraper.appendChild(tableLargeText) : ''
     tableWraper ? tableWraper.appendChild(tableSmallText) : ''
-    //console.log('tabloaded', tabLoaded)
-    // console.log(document.querySelector('.table--wrapper').children.length)
-    document.querySelector('.table--wrapper').children.length === 3 && tabLoaded === 0 ? toggleTabLoaded() : ''
+    document.querySelector('.table--wrapper').children.length === 3 && tabLoaded === 0 && document.querySelector('.color-list').children.length > 0
+      ? toggleTabLoaded()
+      : ''
+    table.setAttribute('class', 'actif')
+    document.querySelectorAll('.tabs li')[0].setAttribute('class', 'actif')
+    document.querySelectorAll('.legend div')[0].setAttribute('class', 'actif')
   }
 
   return (
     <>
-      <div className="color-list" ref={colorListRef}>
-        {colors.map((color, index) => (
-          <div className="input-group--wrapper" key={'color' + index}>
-            <div className="input--wrapper">
-              <label htmlFor={'color' + index}>Name</label>
-              <input type={'text'} id={'color' + index} name={'color' + index} value={color.name} />
-            </div>
-            <div className="hexa--wrapper">
+      <h1>Grille d'analyse des contrastes</h1>
+      <section className="color">
+        <h2>tableau de couleur</h2>
+        <div className="color-list" ref={colorListRef}>
+          {colors.map((color, index) => (
+            <div className="input-group--wrapper" key={'color' + index}>
               <div className="input--wrapper">
-                <label htmlFor={'color' + index}>Red</label>
-                <input type={'text'} id={'color' + index} name={'color' + index} value={color.hexa.r} />
+                <label htmlFor={'color' + index}>Name</label>
+                <input type={'text'} id={'color' + index} name={'color' + index} value={color.name} />
+              </div>
+              <div className="hexa--wrapper">
+                <div className="input--wrapper">
+                  <label htmlFor={'color' + index}>Red</label>
+                  <input type={'text'} id={'color' + index} name={'color' + index} value={color.hexa.r} />
+                </div>
+                <div className="input--wrapper">
+                  <label htmlFor={'color' + index}>Green</label>
+                  <input type={'text'} id={'color' + index} name={'color' + index} value={color.hexa.g} />
+                </div>
+                <div className="input--wrapper">
+                  <label htmlFor={'color' + index}>Blue</label>
+                  <input type={'text'} id={'color' + index} name={'color' + index} value={color.hexa.b} />
+                </div>
+                <div className="input--wrapper">
+                  <label htmlFor={'color' + index}>Alpha</label>
+                  <input type={'text'} id={'color' + index} name={'color' + index} value={color.hexa.a} />
+                </div>
               </div>
               <div className="input--wrapper">
-                <label htmlFor={'color' + index}>Green</label>
-                <input type={'text'} id={'color' + index} name={'color' + index} value={color.hexa.g} />
+                <label htmlFor={'color' + index}>Hexa</label>
+                <input type={'text'} id={'color' + index} name={'color' + index} value={color.hexa} />
               </div>
-              <div className="input--wrapper">
-                <label htmlFor={'color' + index}>Blue</label>
-                <input type={'text'} id={'color' + index} name={'color' + index} value={color.hexa.b} />
-              </div>
-              <div className="input--wrapper">
-                <label htmlFor={'color' + index}>Alpha</label>
-                <input type={'text'} id={'color' + index} name={'color' + index} value={color.hexa.a} />
+              <div className="preview--wrapper">
+                <div className="color-preview" style={'background-color:' + color.hexa + ';'}></div>
               </div>
             </div>
-            <div className="input--wrapper">
-              <label htmlFor={'color' + index}>Hexa</label>
-              <input type={'text'} id={'color' + index} name={'color' + index} value={color.hexa} />
-            </div>
-            <div className="preview--wrapper">
-              <div className="color-preview" style={'background-color:' + color.hexa + ';'}></div>
-            </div>
+          ))}
+        </div>
+        <div className="color__controls">
+          <div className="color__controls__imports">
+            <span>
+              <FontAwesomeIcon icon={faFileImport} /> Import
+              <br />
+              {displayImportColor ? <FontAwesomeIcon icon={faChevronUp} /> : <FontAwesomeIcon icon={faChevronDown} />}
+            </span>
+            {displayExportColor ? (
+              <div className="color__controls__imports--active">
+                <span>
+                  <FontAwesomeIcon icon={faFileCode} /> JSON
+                </span>
+                <span>
+                  <FontAwesomeIcon icon={faFileExcel} /> Excel
+                </span>
+              </div>
+            ) : (
+              ''
+            )}
           </div>
-        ))}
-      </div>
+          <div className="color__controls__exports">
+            <span onClick={toJson}>
+              <FontAwesomeIcon icon={faFileExport} /> Export
+              <br />
+              {displayExportColor ? <FontAwesomeIcon icon={faChevronUp} /> : <FontAwesomeIcon icon={faChevronDown} />}
+            </span>
+            {displayExportColor ? (
+              <div className="color__controls__exports--active">
+                <span>
+                  <FontAwesomeIcon icon={faFileCode} /> JSON
+                </span>
+                <span>
+                  <FontAwesomeIcon icon={faFileExcel} /> Excel
+                </span>
+              </div>
+            ) : (
+              ''
+            )}
+          </div>
+        </div>
+      </section>
 
       <div className="controls">
         <button className="addColor" onClick={addNewColor}>
@@ -431,11 +506,14 @@ export default function Home() {
         </button>
       </div>
 
-      <ul className="tabs">
+      {tabLoaded ? <h2>Matrice des couleurs</h2> : ''}
+
+      <ul className={tabLoaded ? 'tabs' : 'tabs hidden'}>
         <li onClick={swapTable}>Matrice</li>
         <li onClick={swapTable}>Grand textes</li>
         <li onClick={swapTable}>Petits textes</li>
       </ul>
+
       <div className="table--wrapper"></div>
 
       {tabLoaded ? (

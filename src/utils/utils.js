@@ -1,6 +1,4 @@
-import html2canvas from 'html2canvas'
-import { elementToSVG, formatXML } from 'dom-to-svg'
-import { toPng, toJpeg, toBlob, toPixelData, toSvg, toCanvas } from 'html-to-image';
+import { toPng, toJpeg, toSvg, toCanvas } from 'html-to-image';
 import * as saveSvgAsPng from "save-svg-as-png";
 
 function removeCanva() {
