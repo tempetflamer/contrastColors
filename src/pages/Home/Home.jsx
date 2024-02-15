@@ -6,14 +6,17 @@ import rgbHex from 'rgb-hex'
 import { rgb, hex } from 'wcag-contrast'
 import './Home.scss'
 import { tabToCanvas, tabToSVG, tabToPNG, tabToJPG } from '../../utils/utils.js'
-import { faFileImport, faFileExport, faFileExcel, faFileCode, faChevronDown, faChevronUp } from '@fortawesome/free-solid-svg-icons'
+import { faFileImport, faFileExport, faFileExcel, faFileCode, faChevronDown, faChevronUp, faCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCircleXmark } from '@fortawesome/free-regular-svg-icons'
+import { library, dom } from '@fortawesome/fontawesome-svg-core'
+library.add(faCircleXmark)
 
 export default function Home() {
   const { addColor, colors } = useGlobalState()
   const colorListRef = useRef()
+  const colorErrorMessageRef = useRef()
   const [countColor, setCountColor] = useState(0)
-  const [newinput, setNewInput] = useState(0)
   const [tabLoaded, setTabLoaded] = useState(0)
   const [displayExportsTable, setDisplayExportsTable] = useState(0)
   const [displayImportColor, setDisplayImportColor] = useState(0)
@@ -229,11 +232,22 @@ export default function Home() {
     divInput41.setAttribute('class', 'color-preview')
     divInput4.appendChild(divInput41)
 
+    // Remove color bloc
+    let divInput5 = document.createElement('div')
+    divInput5.setAttribute('class', 'remove')
+    divGroupInput.appendChild(divInput5)
+
+    let icon5 = document.createElement('i')
+    icon5.setAttribute('class', 'fa-regular fa-circle-xmark')
+    divInput5.appendChild(icon5)
+    divInput5.addEventListener('click', (e) => {
+      divGroupInput.remove()
+    })
     colorlist.appendChild(divGroupInput)
+    dom.watch()
   }
 
   function addNewColor() {
-    setNewInput(countColor)
     colorComponent(countColor + 1)
     !countColor ? setCountColor(1) : setCountColor(parseInt(countColor) + 1)
   }
@@ -264,45 +278,60 @@ export default function Home() {
   }
 
   /**
-   *  Import Data Json who was exported before to load them
+   * Simulate click on hidden input button
    */
   function clickInputImport() {
     let uploadedfile = document.getElementById('jsonfile')
     uploadedfile.click()
   }
+  /**
+   * Import Data Json who was exported before to load them
+   * @param {*} e - event input
+   */
   async function importJson(e) {
-    console.log('e', e, e.target, e.target.value)
-
+    console.log('typeof', typeof e)
     if (e.target.files.length === 1) {
-      resetColors()
-      const reader = new FileReader()
+      // Reset error message value to 0
+      colorErrorMessageRef.current.textContent = ''
+      if (e.target.files[0].name.toLowerCase().endsWith('.json')) {
+        resetColors()
+        const reader = new FileReader()
 
-      reader.onload = async (e) => {
-        const text = e.target.result
-        let json = JSON.parse(text)
+        reader.onload = async (e) => {
+          try {
+            const text = e.target.result
+            let json = JSON.parse(text)
 
-        json.colors.forEach((color) => {
-          addNewColor()
-          const colorList = document.querySelector('.color-list')
-          colorList.lastChild.children[0].children[1].value = color.name
-          colorList.lastChild.children[1].children[0].children[1].value = color.rgba.r
-          colorList.lastChild.children[1].children[1].children[1].value = color.rgba.g
-          colorList.lastChild.children[1].children[2].children[1].value = color.rgba.b
-          colorList.lastChild.children[1].children[3].children[1].value = color.rgba.a
-          colorList.lastChild.children[2].children[1].value = color.hexa
-          colorList.lastChild.children[3].children[0].style.backgroundColor =
-            color.rgba.a === '1'
-              ? `rgb(${color.rgba.r}, ${color.rgba.g}, ${color.rgba.b})`
-              : `rgba(${color.rgba.r}, ${color.rgba.g}, ${color.rgba.b}, ${color.rgba.a})`
-        })
+            json.colors.forEach((color) => {
+              addNewColor()
+              const colorList = document.querySelector('.color-list')
+              colorList.lastChild.children[0].children[1].value = color.name
+              colorList.lastChild.children[1].children[0].children[1].value = color.rgba.r
+              colorList.lastChild.children[1].children[1].children[1].value = color.rgba.g
+              colorList.lastChild.children[1].children[2].children[1].value = color.rgba.b
+              colorList.lastChild.children[1].children[3].children[1].value = color.rgba.a
+              colorList.lastChild.children[2].children[1].value = color.hexa
+              colorList.lastChild.children[3].children[0].style.backgroundColor =
+                color.rgba.a === '1'
+                  ? `rgb(${color.rgba.r}, ${color.rgba.g}, ${color.rgba.b})`
+                  : `rgba(${color.rgba.r}, ${color.rgba.g}, ${color.rgba.b}, ${color.rgba.a})`
+            })
+          } catch (err) {
+            //EN - Error, incorrect json file structure
+            colorErrorMessageRef.current.textContent = 'Erreur, structure du fichier json incorrect'
+          }
+        }
+
+        reader.readAsText(e.target.files[0])
+      } else {
+        //EN - Error, loaded file is not a Json file
+        colorErrorMessageRef.current.textContent = "Erreur, le fichier chargé n'est pas un fichier Json"
       }
-
-      reader.readAsText(e.target.files[0])
     }
   }
 
   /**
-   * Remove last color
+   * Remove last color added
    */
   function removeLastColor() {
     const select = document.getElementsByClassName('color-list')[0]
@@ -451,6 +480,7 @@ export default function Home() {
       <section className="color">
         <h2>tableau de couleur</h2>
         <div className="color-list" ref={colorListRef}>
+          {/*Toutes cette parties n'est littéralement pas utilisé*/}
           {colors.map((color, index) => (
             <div className="input-group--wrapper" key={'color' + index}>
               <div className="input--wrapper">
@@ -482,50 +512,24 @@ export default function Home() {
               <div className="preview--wrapper">
                 <div className="color-preview" style={'background-color:' + color.hexa + ';'}></div>
               </div>
+              <div className="remove">
+                <FontAwesomeIcon icon={faCircleXmark} />
+              </div>
             </div>
           ))}
         </div>
-        <div className="color__controls">
-          <div className="color__controls__imports">
+
+        {!tabLoaded ? (
+          <>
             <input type="file" accept=".json" id="jsonfile" hidden="hidden" onChange={importJson} />
-            <span /* role="input" type="file" accept=".json" */ onClick={clickInputImport}>
+            <button className="color__import" onClick={clickInputImport}>
               <FontAwesomeIcon icon={faFileImport} /> Import
-              <br />
-              {displayImportColor ? <FontAwesomeIcon icon={faChevronUp} /> : <FontAwesomeIcon icon={faChevronDown} />}
-            </span>
-            {displayExportColor ? (
-              <div className="color__controls__imports--active">
-                <span>
-                  <FontAwesomeIcon icon={faFileCode} /> JSON
-                </span>
-                <span>
-                  <FontAwesomeIcon icon={faFileExcel} /> Excel
-                </span>
-              </div>
-            ) : (
-              ''
-            )}
-          </div>
-          <div className="color__controls__exports">
-            <span onClick={toJson}>
-              <FontAwesomeIcon icon={faFileExport} /> Export
-              <br />
-              {displayExportColor ? <FontAwesomeIcon icon={faChevronUp} /> : <FontAwesomeIcon icon={faChevronDown} />}
-            </span>
-            {displayExportColor ? (
-              <div className="color__controls__exports--active">
-                <span>
-                  <FontAwesomeIcon icon={faFileCode} /> JSON
-                </span>
-                <span>
-                  <FontAwesomeIcon icon={faFileExcel} /> Excel
-                </span>
-              </div>
-            ) : (
-              ''
-            )}
-          </div>
-        </div>
+            </button>
+            <div className="color__error-message" ref={colorErrorMessageRef}></div>
+          </>
+        ) : (
+          ''
+        )}
       </section>
 
       <div className="controls">
@@ -613,6 +617,12 @@ export default function Home() {
           </div>
         </div>
       </div>
+
+      <section className="exports">
+        <button className="exports__btn">
+          Import <FontAwesomeIcon icon={faFileImport} /> / Export <FontAwesomeIcon icon={faFileExport} />
+        </button>
+      </section>
     </>
   )
 }
