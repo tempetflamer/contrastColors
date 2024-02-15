@@ -264,6 +264,44 @@ export default function Home() {
   }
 
   /**
+   *  Import Data Json who was exported before to load them
+   */
+  function clickInputImport() {
+    let uploadedfile = document.getElementById('jsonfile')
+    uploadedfile.click()
+  }
+  async function importJson(e) {
+    console.log('e', e, e.target, e.target.value)
+
+    if (e.target.files.length === 1) {
+      resetColors()
+      const reader = new FileReader()
+
+      reader.onload = async (e) => {
+        const text = e.target.result
+        let json = JSON.parse(text)
+
+        json.colors.forEach((color) => {
+          addNewColor()
+          const colorList = document.querySelector('.color-list')
+          colorList.lastChild.children[0].children[1].value = color.name
+          colorList.lastChild.children[1].children[0].children[1].value = color.rgba.r
+          colorList.lastChild.children[1].children[1].children[1].value = color.rgba.g
+          colorList.lastChild.children[1].children[2].children[1].value = color.rgba.b
+          colorList.lastChild.children[1].children[3].children[1].value = color.rgba.a
+          colorList.lastChild.children[2].children[1].value = color.hexa
+          colorList.lastChild.children[3].children[0].style.backgroundColor =
+            color.rgba.a === '1'
+              ? `rgb(${color.rgba.r}, ${color.rgba.g}, ${color.rgba.b})`
+              : `rgba(${color.rgba.r}, ${color.rgba.g}, ${color.rgba.b}, ${color.rgba.a})`
+        })
+      }
+
+      reader.readAsText(e.target.files[0])
+    }
+  }
+
+  /**
    * Remove last color
    */
   function removeLastColor() {
@@ -449,7 +487,8 @@ export default function Home() {
         </div>
         <div className="color__controls">
           <div className="color__controls__imports">
-            <span>
+            <input type="file" accept=".json" id="jsonfile" hidden="hidden" onChange={importJson} />
+            <span /* role="input" type="file" accept=".json" */ onClick={clickInputImport}>
               <FontAwesomeIcon icon={faFileImport} /> Import
               <br />
               {displayImportColor ? <FontAwesomeIcon icon={faChevronUp} /> : <FontAwesomeIcon icon={faChevronDown} />}
