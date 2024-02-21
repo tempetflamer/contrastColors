@@ -28,7 +28,7 @@ export default function colorComponent(index, colorList, data) {
     //RGBA color bloc
     //R bloc
     let divInput2 = document.createElement('div')
-    divInput2.setAttribute('class', 'hexa--wrapper')
+    divInput2.setAttribute('class', 'rgba--wrapper')
     divGroupInput.appendChild(divInput2)
 
     let divInput21 = document.createElement('div')
@@ -49,6 +49,12 @@ export default function colorComponent(index, colorList, data) {
     input21.min = 0
     input21.max = 255
     divInput21.appendChild(input21)
+    /**
+    * Check if the pressed key is one of the control keys (Delete, Arrow keys, Backspace, Home, End, Enter, Tab).
+    * If yes, do nothing.
+    * Otherwise, check if the pressed key is not in the allowedCharacters string.
+    * If true, prevent the default action (e.g., prevent typing the character).
+     */
     input21.addEventListener('keydown', (e) => {
         const allowedCharacters = '0123456789';
         (e.key === "Delete" || e.key === "ArrowLeft" || e.key === "ArrowRight" || e.key === "ArrowUp" || e.key === "ArrowDown" || e.key === "Backspace" || e.key === "Home" || e.key === "End" || e.key === "Enter" || e.key === "Tab") ? '' :
@@ -61,7 +67,7 @@ export default function colorComponent(index, colorList, data) {
         const aTrim = parseFloat(input24.value.trim())
         // If > 255 then change for value max 255
         rTrim > 255 ? input21.value = 255 : ''
-        // If r g b are between 0 and 255, then change hexa color and preview color 
+        // If r g b are between 0 and 255, then change hexa color value and preview color backgound 
         rTrim >= 0 && gTrim >= 0 && bTrim >= 0 && rTrim <= 255 && gTrim <= 255 && bTrim <= 255
             ? input24.value.trim().length != 0
                 ? ((input3.value = rgbHex(rTrim, gTrim, bTrim, aTrim)), //Hex value
@@ -91,6 +97,12 @@ export default function colorComponent(index, colorList, data) {
     input22.min = 0
     input22.max = 255
     divInput22.appendChild(input22)
+    /**
+    * Check if the pressed key is one of the control keys (Delete, Arrow keys, Backspace, Home, End, Enter, Tab).
+    * If yes, do nothing.
+    * Otherwise, check if the pressed key is not in the allowedCharacters string.
+    * If true, prevent the default action (e.g., prevent typing the character).
+    */
     input22.addEventListener('keydown', (e) => {
         const allowedCharacters = '0123456789';
         (e.key === "Delete" || e.key === "ArrowLeft" || e.key === "ArrowRight" || e.key === "ArrowUp" || e.key === "ArrowDown" || e.key === "Backspace" || e.key === "Home" || e.key === "End" || e.key === "Enter" || e.key === "Tab") ? '' :
@@ -103,7 +115,7 @@ export default function colorComponent(index, colorList, data) {
         const aTrim = parseFloat(input24.value.trim())
         // If > 255 then change for value max 255
         gTrim > 255 ? input22.value = 255 : ''
-        // If r g b are between 0 and 255, then change hexa color and preview color 
+        // If r g b are between 0 and 255, then change hexa color value and preview color background 
         rTrim >= 0 && gTrim >= 0 && bTrim >= 0 && rTrim <= 255 && gTrim <= 255 && bTrim <= 255
             ? input24.value.trim().length != 0
                 ? ((input3.value = rgbHex(rTrim, gTrim, bTrim, aTrim)), //Hex value
@@ -133,6 +145,12 @@ export default function colorComponent(index, colorList, data) {
     input23.min = 0
     input23.max = 255
     divInput23.appendChild(input23)
+    /**
+     * Check if the pressed key is one of the control keys (Delete, Arrow keys, Backspace, Home, End, Enter, Tab).
+     * If yes, do nothing.
+     * Otherwise, check if the pressed key is not in the allowedCharacters string.
+     * If true, prevent the default action (e.g., prevent typing the character).
+     */
     input23.addEventListener('keydown', (e) => {
         const allowedCharacters = '0123456789';
         (e.key === "Delete" || e.key === "ArrowLeft" || e.key === "ArrowRight" || e.key === "ArrowUp" || e.key === "ArrowDown" || e.key === "Backspace" || e.key === "Home" || e.key === "End" || e.key === "Enter" || e.key === "Tab") ? '' :
@@ -145,7 +163,7 @@ export default function colorComponent(index, colorList, data) {
         const aTrim = parseFloat(input24.value.trim())
         // If > 255 then change for value max 255
         bTrim > 255 ? input23.value = 255 : ''
-        // If r g b are between 0 and 255, then change hexa color and preview color 
+        // If r g b are between 0 and 255, then change hexa color value and preview color background
         rTrim >= 0 && gTrim >= 0 && bTrim >= 0 && rTrim <= 255 && gTrim <= 255 && bTrim <= 255
             ? input24.value.trim().length != 0
                 ? ((input3.value = rgbHex(rTrim, gTrim, bTrim, aTrim)), //Hex value
@@ -171,10 +189,17 @@ export default function colorComponent(index, colorList, data) {
     input24.setAttribute('id', 'color__a' + index)
     input24.setAttribute('name', 'color__a' + index)
     divInput24.appendChild(input24)
+    /**
+     * Check if the pressed key is one of the control keys (Delete, Arrow keys, Backspace, Home, End, Enter, Tab).
+     * If yes, do nothing. O
+     * Otherwise, check if the pressed key is not in the allowedCharacters string,
+     * or if the pressed key is a dot and the input already contains a dot.
+     * If either condition is true, prevent the default action (e.g., prevent typing the character).
+     */
     input24.addEventListener('keydown', (e) => {
         const allowedCharacters = '0123456789.';
         (e.key === "Delete" || e.key === "ArrowLeft" || e.key === "ArrowRight" || e.key === "ArrowUp" || e.key === "ArrowDown" || e.key === "Backspace" || e.key === "Home" || e.key === "End" || e.key === "Enter" || e.key === "Tab") ? '' :
-            allowedCharacters.indexOf(e.key) === -1 ? e.preventDefault() : ''
+            allowedCharacters.indexOf(e.key) === -1 || (e.key === '.' && input24.value.includes('.')) ? e.preventDefault() : ''
     })
     input24.addEventListener('change', (e) => {
         const rTrim = parseInt(input21.value.trim())
@@ -183,7 +208,7 @@ export default function colorComponent(index, colorList, data) {
         const aTrim = parseFloat(input24.value.trim())
         // If alpha > 1 then change alpha for value max 1
         aTrim > 1 ? input24.value = 1 : ''
-        // If r g b are between 0 and 255, then change hexa color and preview color 
+        // If r g b are between 0 and 255, then change hexa color value and preview color background
         rTrim >= 0 && gTrim >= 0 && bTrim >= 0 && rTrim <= 255 && gTrim <= 255 && bTrim <= 255
             ? input24.value.trim().length != 0
                 ? ((input3.value = rgbHex(rTrim, gTrim, bTrim, aTrim)), //Hex valuedisplayExportColor

@@ -29,9 +29,31 @@ export default function Home() {
   const [displayExportsTable, setDisplayExportsTable] = useState(0)
   const [displayExportColor, setDisplayExportColor] = useState(0)
 
+  /**
+   * Check if colorListRef contains at least one element before setting setColorLoaded to true.
+   */
   useEffect(() => {
     colorListRef.current.childElementCount === 0 ? setColorLoaded(0) : setColorLoaded(1)
   }, [colorListRef.current?.childElementCount])
+
+  /**
+   * Checks if colorListRef contains at least 1 element by verifying if colorLoaded is true.
+   * Loops through the children of colorListRef and checks if the displayed text on the label's name of the first element is correct.
+   * If it's correct, do nothing; otherwise, change it to the one in the current language.
+   */
+  useEffect(() => {
+    if (colorLoaded) {
+      for (let i = 0; i < colorListRef.current.children.length; i++) {
+        const child = colorListRef.current.children[i]
+        child.children[0].children[0].textContent === data.factory.name
+          ? ''
+          : ((child.children[0].children[0].textContent = data.factory.name),
+            (child.children[1].children[0].children[0].textContent = data.factory.color_r),
+            (child.children[1].children[1].children[0].textContent = data.factory.color_g),
+            (child.children[1].children[2].children[0].textContent = data.factory.color_b))
+      }
+    }
+  }, [language])
 
   function toggleTabLoaded() {
     setTabLoaded(!tabLoaded)
