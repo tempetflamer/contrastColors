@@ -1,12 +1,11 @@
 import hexRgb from 'hex-rgb'
 import rgbHex from 'rgb-hex'
-
 /**
  * Factory to create a new color component 
- * @param {number} index 
- * @param {*} colorList 
- */
-export default function colorComponent(index, colorList) {
+ * @param {Number} index 
+ * @param {HTMLElement} colorList 
+*/
+export default function colorComponent(index, colorList, data) {
     //Name color bloc
     let divGroupInput = document.createElement('div')
     divGroupInput.setAttribute('class', 'input-group--wrapper')
@@ -17,7 +16,7 @@ export default function colorComponent(index, colorList) {
 
     let label1 = document.createElement('label')
     label1.setAttribute('for', 'color__name' + index)
-    label1.textContent = 'Name'
+    label1.textContent = data.factory.name
     divInput1.appendChild(label1)
 
     let input1 = document.createElement('input')
@@ -38,7 +37,7 @@ export default function colorComponent(index, colorList) {
 
     let label21 = document.createElement('label')
     label21.setAttribute('for', 'color__r' + index)
-    label21.textContent = 'Red'
+    label21.textContent = data.factory.color_r
     divInput21.appendChild(label21)
 
     let input21 = document.createElement('input')
@@ -80,7 +79,7 @@ export default function colorComponent(index, colorList) {
 
     let label22 = document.createElement('label')
     label22.setAttribute('for', 'color__g' + index)
-    label22.textContent = 'Green'
+    label22.textContent = data.factory.color_g
     divInput22.appendChild(label22)
 
     let input22 = document.createElement('input')
@@ -122,7 +121,7 @@ export default function colorComponent(index, colorList) {
 
     let label23 = document.createElement('label')
     label23.setAttribute('for', 'color__b' + index)
-    label23.textContent = 'Blue'
+    label23.textContent = data.factory.color_b
     divInput23.appendChild(label23)
 
     let input23 = document.createElement('input')

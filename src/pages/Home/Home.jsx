@@ -4,14 +4,22 @@ import { faFileImport } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import React, { useEffect, useRef, useState } from 'react'
 import { hex } from 'wcag-contrast'
+import { useLanguageState } from '../../context/LanguageContext'
 import { colorsToJPG, colorsToPNG, tabToCanvas, tabToJPG, tabToPNG, tabToSVG, toCsv, toJson } from '../../utils/utils.js'
 import colorComponent from '../../utils/colorFactory.js'
 import './Home.scss'
+import { Helmet } from 'react-helmet-async'
+
+import { en, fr } from '../../data/data.js'
+import FRImage from '../../assets/img/fr-flag.svg'
+import ENImage from '../../assets/img/en-flag.svg'
 
 library.add(faCircleXmark)
 dom.watch()
 
 export default function Home() {
+  const { data, setData, setLanguage, language } = useLanguageState()
+
   const colorListRef = useRef()
   const colorErrorMessageRef = useRef()
   const [countColor, setCountColor] = useState(0)
@@ -34,6 +42,15 @@ export default function Home() {
   function toggleExportsColor() {
     setDisplayExportColor(!displayExportColor)
   }
+  /**
+   * Change webapp language with languageContext
+   * ex: en for English and fr for French
+   */
+  function toggleLanguage() {
+    language === 'fr'
+      ? (setLanguage('en'), setData(en), document.documentElement.setAttribute('lang', 'en'))
+      : (setLanguage('fr'), setData(fr), document.documentElement.setAttribute('lang', 'fr'))
+  }
 
   //Dropzone
   const onDragEnter = (e) => {
@@ -52,8 +69,6 @@ export default function Home() {
 
   const onDrop = (e) => {
     e.preventDefault()
-    console.log('e', e, e.dataTransfer, e.dataTransfer.files.length, e.dataTransfer.files[0], e.dataTransfer.files[0].name)
-
     importJson(e.dataTransfer)
     setDropActive(false)
   }
@@ -66,7 +81,7 @@ export default function Home() {
   }
 
   function addNewColor() {
-    colorComponent(parseInt(countColor) + 1, colorListRef.current)
+    colorComponent(parseInt(countColor) + 1, colorListRef.current, data)
     setCountColor(parseInt(countColor) + 1)
   }
 
@@ -84,7 +99,6 @@ export default function Home() {
    */
   async function importJson(file) {
     //replace ImportJson by handleFileChange
-    console.log('typeof', typeof file, file)
     if (file.files.length === 1) {
       // Reset error message value to 0
       colorErrorMessageRef.current.textContent = ''
@@ -166,13 +180,13 @@ export default function Home() {
     tableActif.removeAttribute('class', 'actif')
     tabActif.removeAttribute('class', 'actif')
     legendActif.removeAttribute('class', 'actif')
-    e.target.childNodes[0].data === 'Matrice'
+    e.target.childNodes[0].data === 'Matrice' || e.target.childNodes[0].data === 'Matrix'
       ? (tables[0].setAttribute('class', 'actif'), tabs[0].setAttribute('class', 'actif'), legends[0].setAttribute('class', 'actif'))
       : ''
-    e.target.childNodes[0].data === 'Grand textes'
+    e.target.childNodes[0].data === 'Grand textes' || e.target.childNodes[0].data === 'Large Texts'
       ? (tables[1].setAttribute('class', 'actif'), tabs[1].setAttribute('class', 'actif'), legends[1].setAttribute('class', 'actif'))
       : ''
-    e.target.childNodes[0].data === 'Petits textes'
+    e.target.childNodes[0].data === 'Petits textes' || e.target.childNodes[0].data === 'Small Texts'
       ? (tables[2].setAttribute('class', 'actif'), tabs[2].setAttribute('class', 'actif'), legends[2].setAttribute('class', 'actif'))
       : ''
   }
@@ -321,17 +335,34 @@ export default function Home() {
 
   return (
     <>
-      <h1>Grille d'analyse des contrastes</h1>
+      <Helmet>
+        {/* language === 'fr' ? setLanguage('en') : setLanguage('fr') */}
+
+        <title>{data.head.title}</title>
+        <meta name="description" content={data.head.meta_description} />
+      </Helmet>
+      <header className="lan">
+        {language === 'en' ? (
+          <div className="en">
+            <img src={ENImage} tabIndex="0" alt="English flag" aria-label="Switch language to French" onClick={toggleLanguage} />
+          </div>
+        ) : (
+          <div className="fr">
+            <img src={FRImage} tabIndex="0" alt="Drapeau français" aria-label="Changer la langue vers l'anglais" onClick={toggleLanguage} />
+          </div>
+        )}
+      </header>
+      <h1>{data.h1}</h1>
       <section className="color">
-        <h2>Tableau de couleur</h2>
+        <h2>{data.color.h2}</h2>
         <div className="color__list" ref={colorListRef}></div>
 
         <div className="color__controls">
           <button className="color__controls__add" onClick={addNewColor}>
-            <b>Ajouter une nouvelle couleur</b>
+            <b>{data.color.add}</b>
           </button>
           <button className="color__controls__reset" onClick={resetColors}>
-            <b>Réinitialiser</b>
+            <b>{data.color.reset}</b>
           </button>
         </div>
         <br />
@@ -346,28 +377,28 @@ export default function Home() {
               onDrop={onDrop}
               onClick={clickInputImport}
             >
-              <FontAwesomeIcon icon={faFileImport} /> Importer
+              <FontAwesomeIcon icon={faFileImport} /> {data.color.import}
             </button>
             <div className="color__error-message" ref={colorErrorMessageRef}></div>
           </>
         ) : (
           <div className="color__export--wrapper">
             <button onClick={toggleExportsColor} className={`color__export${displayExportColor ? ' active' : ''}`}>
-              Exporter les couleurs
+              {data.color.export}
             </button>
             {displayExportColor ? (
               <div className="color__export__options">
                 <div role="button" onClick={toJson} tabIndex={0}>
-                  Exporter vers JSON
+                  {data.color.export__options.json}
                 </div>
                 <div role="button" onClick={toCsv} tabIndex={0}>
-                  Exporter vers CSV
+                  {data.color.export__options.csv}
                 </div>
                 <div role="button" onClick={colorsToPNG} tabIndex={0}>
-                  Exporter vers PNG
+                  {data.color.export__options.png}
                 </div>
                 <div role="button" onClick={colorsToJPG} tabIndex={0}>
-                  Exporter vers JPG
+                  {data.color.export__options.jpg}
                 </div>
               </div>
             ) : (
@@ -379,16 +410,16 @@ export default function Home() {
 
       <div className="controls">
         <button className="refresh-table" onClick={refreshArrayContrast}>
-          Rafraichir le tableau de contrast
+          {data.controls.refresh}
         </button>
       </div>
       <section className="matrix">
-        {tabLoaded ? <h2>Matrice des couleurs</h2> : ''}
+        {tabLoaded ? <h2>{data.matrix.h2}</h2> : ''}
 
         <ul className={tabLoaded ? 'matrix__tabs' : 'matrix__tabs hidden'}>
-          <li onClick={swapTable}>Matrice</li>
-          <li onClick={swapTable}>Grand textes</li>
-          <li onClick={swapTable}>Petits textes</li>
+          <li onClick={swapTable}>{data.matrix.tab1}</li>
+          <li onClick={swapTable}>{data.matrix.tab2}</li>
+          <li onClick={swapTable}>{data.matrix.tab3}</li>
         </ul>
 
         <div className="matrix__table--wrapper"></div>
@@ -397,34 +428,28 @@ export default function Home() {
           <>
             <div className="matrix__table__export--wrapper">
               <button onClick={toggleExportsTable} className={displayExportsTable ? 'active' : ''}>
-                Exporter le tableau
+                {data.matrix.export}
               </button>
               {displayExportsTable ? (
                 <div className="matrix__table__export__options">
                   <div role="button" onClick={tabToCanvas}>
-                    Exporter vers Canva
+                    {data.matrix.export__options.canva}
                   </div>
                   <div role="button" onClick={tabToJPG}>
-                    Exporter vers JPG
+                    {data.matrix.export__options.jpg}
                   </div>
                   <div role="button" onClick={tabToPNG}>
-                    Exporter vers PNG
+                    {data.matrix.export__options.png}
                   </div>
                   <div role="button" onClick={tabToSVG}>
-                    Exporter vers SVG
+                    {data.matrix.export__options.svg}
                   </div>
                 </div>
               ) : (
                 ''
               )}
             </div>
-            <div className="matrix__export__canvas--wrapper">
-              <p>
-                <i>"{"Clique droit ➔ enregistrer l'image sous"}"</i>
-                {" pour enregistrer l'image"}
-                <br /> <i>"{"Clique droit ➔ copier l'image"}"</i> {'pour la copier dans le press papier'}
-              </p>
-            </div>
+            <div dangerouslySetInnerHTML={{ __html: data.export__canva }} className="matrix__export__canvas--wrapper"></div>
           </>
         ) : (
           ''
@@ -432,24 +457,9 @@ export default function Home() {
 
         <div className="matrix__legend--wrapper">
           <div className="matrix__legend">
-            <div>Tous les ratios de contraste </div>
-            <div>
-              Le ratio de contraste pour les grands textes doit être supérieur ou égal à 3.
-              <br />
-              <br /> <b>Un grand texte est :</b>
-              <br />
-              - Un texte non gras supérieur ou égal à 18pt.
-              <br />- Un texte en gras supérieur ou égal à 14pt.
-            </div>
-            <div>
-              Le ratio de contraste pour les petits textes doit être supérieur ou égal à 4,5.
-              <br />
-              <br />
-              <b>Un petit texte est :</b>
-              <br />
-              - Un texte non gras inférieur à 18pt.
-              <br />- Un texte en gras inférieur à 14pt.
-            </div>
+            <div dangerouslySetInnerHTML={{ __html: data.legend.l1 }}></div>
+            <div dangerouslySetInnerHTML={{ __html: data.legend.l2 }}></div>
+            <div dangerouslySetInnerHTML={{ __html: data.legend.l3 }}></div>
           </div>
         </div>
       </section>

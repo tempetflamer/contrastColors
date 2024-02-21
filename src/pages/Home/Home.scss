@@ -1,6 +1,16 @@
-h1 {
-    margin-top: 1.5rem;
+header {
+    div {
+        margin: 0.5rem 1.5rem;
+        display: flex;
+        justify-content: flex-end;
+        img {
+            cursor: pointer;
+            height: 32px;
+            width: 32px;
+        }
+    }
 }
+
 .color {
     display: flex;
     flex-direction: column;
@@ -70,13 +80,13 @@ h1 {
                 justify-content: center;
                 align-items: center;
                 font-size: 1.2rem;
-                margin-top: 9.81px; //correspond à la preview qui prend pas toute la hauteur
+                margin-top: 9.81px;
                 margin-left: -1rem;
-                //43.25 - 33.81
                 :hover {
                     color: #dc354597;
                 }
                 svg {
+                    cursor: pointer;
                     &:active {
                         outline: none;
                     }
@@ -84,7 +94,7 @@ h1 {
             }
         }
     }
-    //button color add sous couleur
+    //button color add
     &__controls {
         margin-top: 0.5rem;
         width: 48rem;
@@ -93,24 +103,19 @@ h1 {
         gap: 0.5rem;
 
         &__add {
-            //margin-top: 0.75rem;//la div laisse suffisament
             border: 2px dashed #198754;
             width: max-content;
-            //color: #198754;
             color: #0d492d;
             cursor: pointer;
             background-color: none;
             width: 80%;
             height: 2rem;
             @media (max-width: 780px) {
-                //margin-top: 1rem;
                 width: fit-content;
                 height: fit-content;
                 padding: 0.5rem 1rem;
             }
             &:hover {
-                //border: 2px solid #19875498;
-                //background-color: #19875498;
                 border: 2px solid #3f795e;
                 background-color: #3f795e;
                 color: white;
@@ -119,21 +124,17 @@ h1 {
         &__reset {
             border: 2px dashed #dc3545;
             width: max-content;
-            //color: #dc3545;
             color: #821823;
             cursor: pointer;
             background-color: none;
             width: 20%;
             height: 2rem;
             @media (max-width: 780px) {
-                //margin-top: 1rem;
                 width: fit-content;
                 height: fit-content;
                 padding: 0.5rem 1rem;
             }
             &:hover {
-                //border: 2px solid #dc354598;
-                //background-color: #dc354598;
                 border: 2px solid #b13f48;
                 background-color: #b13f48;
                 color: white;
@@ -144,7 +145,6 @@ h1 {
     &__error-message {
         text-align: center;
         vertical-align: middle;
-        //opacity: 1;
         font-size: 0.75em;
         color: red;
     }
@@ -157,10 +157,8 @@ h1 {
         vertical-align: middle;
         border-radius: 0.25rem;
         color: white;
-        //border: none;
         border: 1px solid #6c757d;
         background-color: #6c757d;
-        //definir la taille même si ça change rien
         width: 10.5rem;
         cursor: pointer;
         &:hover {
@@ -169,7 +167,6 @@ h1 {
         &.active {
             border-radius: 0.25rem 0.25rem 0 0;
             color: #6c757d;
-            //border: 1px solid #6c757d;
             background-color: white;
             &:hover {
                 background-color: ghostwhite;
@@ -177,20 +174,13 @@ h1 {
         }
 
         &--wrapper {
-            //active style
-            //pour gérer le faite que les élément passe au dessus
             position: relative;
             div {
-                // same as options--wrapper
+                //options--wrapper
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 flex-direction: column;
-
-                //plus besoin
-                // &:nth-child(1) {
-                //     border-radius: 0.25rem 0.25rem 0 0;
-                // }
 
                 &:nth-child(4) {
                     border-radius: 0 0 0.25rem 0.25rem;
@@ -217,14 +207,10 @@ h1 {
         }
 
         &__options {
-            //pour gérer le faite que les élément passe au dessus
+            cursor: pointer;
             position: absolute;
             z-index: 1;
-            //display: flex;
-            //align-items: self-start;//sert pas
-            //justify-content: first baseline;
             top: 5.15rem;
-            //top: 190%;
             left: 0;
             width: 100%;
             height: 100%;
@@ -238,7 +224,6 @@ h1 {
 
     button {
         padding: 0.5rem 1rem;
-        //width: 15rem;
         text-align: center;
         text-decoration: none;
         vertical-align: middle;
@@ -249,6 +234,7 @@ h1 {
     .refresh-table {
         background-color: #0d6efd;
         border: none;
+        cursor: pointer;
         &:hover {
             background-color: #0b5ed7;
         }
@@ -270,6 +256,7 @@ h1 {
             text-align: center;
             margin-right: 5px;
             color: rgba(0, 0, 0, 0.6);
+            cursor: pointer;
         }
         li.actif {
             background: white;
@@ -317,6 +304,7 @@ h1 {
                 background-color: #6c757d;
                 //definir la taille même si ça change rien
                 width: 10.5rem;
+                cursor: pointer;
                 &:hover {
                     background-color: #5a6268;
                     //border-color: #545b62;
@@ -337,19 +325,7 @@ h1 {
                 justify-content: center;
                 align-items: center;
                 flex-direction: column;
-                //pour gérer le faite que les élément passe au dessus //ça n'a aucune fucking sens ça marche avec une classe mais pas sans classe
-                // position: absolute;
-                // z-index: 1;
-                // top: 4.75rem;
-                // left: 0;
-                // width: 100%;
-                // height: 100%;
-
-                //plus besoin
-                // &:nth-child(1) {
-                //     border-radius: 0.25rem 0.25rem 0 0;
-                // }
-
+                cursor: pointer;
                 &:nth-child(4) {
                     border-radius: 0 0 0.25rem 0.25rem;
                 }
@@ -392,6 +368,9 @@ h1 {
             align-items: center;
             flex-direction: column;
         }
+        canvas {
+            cursor: copy;
+        }
     }
     &__legend {
         &--wrapper {
@@ -405,35 +384,6 @@ h1 {
             width: 30rem;
             text-align: left;
             display: block;
-        }
-    }
-}
-
-// Last section qui sera probablement retiré
-.exports {
-    padding-top: 1rem;
-    &__btn {
-        font-size: 1.1rem;
-        padding: 0.5rem 0.75rem;
-        text-align: center;
-        text-decoration: none;
-        vertical-align: middle;
-        border-radius: 0.25rem;
-        color: white;
-        border: none;
-        background-color: #6c757d;
-        cursor: pointer;
-        &:hover {
-            background-color: #5a6268;
-        }
-        &:active {
-            border-radius: 0.25rem 0.25rem 0 0;
-            color: #6c757d;
-            border: 1px solid #6c757d;
-            background-color: white;
-            &:hover {
-                background-color: ghostwhite;
-            }
         }
     }
 }
